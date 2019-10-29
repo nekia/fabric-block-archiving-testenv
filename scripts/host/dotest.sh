@@ -15,7 +15,6 @@ sudo rm -rf crypto-config channel-artifacts/* ledgers/ ledgers-archived/
 
 # Start network
 export CORE_LEDGER_MAXBLOCKFILESIZE=65536              # it means the size of each blockfile is 64K
-export CORE_PEER_ARCHIVER_INTERVAL=5                  # Archiver polling interval in secs
 export CORE_PEER_ARCHIVER_EACH=10
 export CORE_PEER_ARCHIVER_KEEP=5
 

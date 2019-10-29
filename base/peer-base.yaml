@@ -28,7 +28,6 @@ services:
       - CORE_LEDGER_MAXBLOCKFILESIZE=${CORE_LEDGER_MAXBLOCKFILESIZE}
       - CORE_PEER_ARCHIVER_EACH=${CORE_PEER_ARCHIVER_EACH}
       - CORE_PEER_ARCHIVER_KEEP=${CORE_PEER_ARCHIVER_KEEP}
-      - CORE_PEER_ARCHIVER_INTERVAL=${CORE_PEER_ARCHIVER_INTERVAL}
 
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start

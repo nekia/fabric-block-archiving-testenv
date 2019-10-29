@@ -104,7 +104,6 @@ services:
             - CORE_LEDGER_BLOCKVAULT_DIR=${CORE_LEDGER_BLOCKVAULT_DIR}
             - CORE_PEER_ARCHIVER_EACH=${CORE_PEER_ARCHIVER_EACH}
             - CORE_PEER_ARCHIVER_KEEP=${CORE_PEER_ARCHIVER_KEEP}
-            - CORE_PEER_ARCHIVER_INTERVAL=${CORE_PEER_ARCHIVER_INTERVAL}
         volumes:
             - /var/run/:/host/var/run/
             - ../../../common:/opt/gopath/src/github.com/hyperledger/fabric/common

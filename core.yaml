@@ -12,7 +12,6 @@ peer:
     archiving:
         enabled: true
     archiver:
-        interval: 10
         enabled: false
 
     # The Peer id is used for identifying this Peer instance.
