@@ -1,0 +1,10 @@
+/channel-artifacts/*.tx
+/channel-artifacts/*.block
+/channel-artifacts/*/
+/crypto-config/*
+/ledgers
+/ledgers-archived
+*.pyc
+*.tx
+/configs/**/
+/node_modules

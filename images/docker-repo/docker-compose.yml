@@ -1,0 +1,31 @@
+#
+# COPYRIGHT Fujitsu Software Technologies Limited 2018 All Rights Reserved.
+#
+
+#
+# Start a private docker registry for sharing updated fabric-peer container image
+# among Raspberry Pi's.
+# Based on https://docs.docker.com/registry/#native-basic-auth
+#
+#   Note:
+#     - id/password for the registry is admin/admin
+#
+
+version: '2'
+
+services:
+  registry:
+    image: registry:latest
+    container_name: registry
+    environment:
+      REGISTRY_AUTH: "htpasswd"
+      REGISTRY_AUTH_HTPASSWD_REALM: "Registry Realm"
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    volumes:
+      - /opt/registry:/var/lib/registry
+      - ./auth:/auth
+    ports:
+      - 5000:5000
+    restart: always
+    networks:
+      - default
