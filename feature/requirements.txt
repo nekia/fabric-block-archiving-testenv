@@ -1,6 +1,6 @@
 behave
 nose
-flask==0.10.1
+flask==1.0
 python-dateutil==2.2
 pytz==2014.3
 pyyaml==3.10
