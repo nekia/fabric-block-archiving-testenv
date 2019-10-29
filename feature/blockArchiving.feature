@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-Feature: blockVault service
+Feature: BlockArchiver service
     As a user I expect the archiving/discarding work correctly
 
 # @doNotDecompose
@@ -23,7 +23,7 @@ Feature: blockVault service
   # the size of blockfile is 32KB
   And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
   And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
-  # blockVault is working on only Org1
+  # BlockArchiver is working on only Org1
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVER_EACH environment variable is 2
@@ -37,7 +37,7 @@ Feature: blockVault service
   And a user invokes 4 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
   And I wait "10" seconds
 
-  # We expect each peer enabled blockVault has
+  # We expect each peer enabled BlockArchiver has
   #  ( CORE_PEER_ARCHIVER_KEEP
   #    + 1(blockfile_000000)
   #    + ( (the total number of blockfiles - ( CORE_PEER_ARCHIVER_KEEP + 1 ) ) % CORE_PEER_ARCHIVER_EACH ) blockfiles
@@ -46,7 +46,7 @@ Feature: blockVault service
   And the number of blockfiles on "peer1.org1.example.com" is 3 on the channel "mychannel"
   And the number of blockfiles on "peer0.org2.example.com" is 5 on the channel "mychannel"
   And the number of blockfiles on "peer1.org2.example.com" is 5 on the channel "mychannel"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 2 on the channel "mychannel"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 2 on the channel "mychannel"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
 
@@ -65,7 +65,7 @@ Feature: blockVault service
   # the size of blockfile is 32KB
   And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
   And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
-  # blockVault is working on both Orgs
+  # BlockArchiver is working on both Orgs
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG2 environment variable is true
@@ -85,8 +85,8 @@ Feature: blockVault service
   And the number of blockfiles on "peer1.org1.example.com" is 3 on the channel "mychannel"
   And the number of blockfiles on "peer0.org2.example.com" is 3 on the channel "mychannel"
   And the number of blockfiles on "peer1.org2.example.com" is 3 on the channel "mychannel"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 2 on the channel "mychannel"
-  And the number of archived blockfiles on "blkvault-repo.org2.example.com" is 2 on the channel "mychannel"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 2 on the channel "mychannel"
+  And the number of archived blockfiles on "blkarchiver-repo.org2.example.com" is 2 on the channel "mychannel"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
   And the data integrity in "peer0.org2.example.com" of "org2.example.com" is valid on the channel "mychannel"
@@ -107,7 +107,7 @@ Feature: blockVault service
   # the size of blockfile is 32KB
   And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
   And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
-  # blockVault is working on only Org1
+  # BlockArchiver is working on only Org1
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVER_EACH environment variable is 2
@@ -135,8 +135,8 @@ Feature: blockVault service
   And the number of blockfiles on "peer0.org2.example.com" is 6 on the channel "mychannel2"
   And the number of blockfiles on "peer1.org2.example.com" is 5 on the channel "mychannel1"
   And the number of blockfiles on "peer1.org2.example.com" is 6 on the channel "mychannel2"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 2 on the channel "mychannel1"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 4 on the channel "mychannel2"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 2 on the channel "mychannel1"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 4 on the channel "mychannel2"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
@@ -157,7 +157,7 @@ Feature: blockVault service
   # the size of blockfile is 32KB
   And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
   And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
-  # blockVault is working on both Orgs
+  # BlockArchiver is working on both Orgs
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG2 environment variable is true
@@ -187,10 +187,10 @@ Feature: blockVault service
   And the number of blockfiles on "peer0.org2.example.com" is 2 on the channel "mychannel2"
   And the number of blockfiles on "peer1.org2.example.com" is 3 on the channel "mychannel1"
   And the number of blockfiles on "peer1.org2.example.com" is 2 on the channel "mychannel2"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 2 on the channel "mychannel1"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 4 on the channel "mychannel2"
-  And the number of archived blockfiles on "blkvault-repo.org2.example.com" is 2 on the channel "mychannel1"
-  And the number of archived blockfiles on "blkvault-repo.org2.example.com" is 4 on the channel "mychannel2"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 2 on the channel "mychannel1"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 4 on the channel "mychannel2"
+  And the number of archived blockfiles on "blkarchiver-repo.org2.example.com" is 2 on the channel "mychannel1"
+  And the number of archived blockfiles on "blkarchiver-repo.org2.example.com" is 4 on the channel "mychannel2"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
@@ -211,7 +211,7 @@ Feature: blockVault service
   # the size of blockfile is 32KB
   And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
   And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
-  # blockVault is working on both Orgs
+  # BlockArchiver is working on both Orgs
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVER_EACH environment variable is 1
@@ -235,8 +235,8 @@ Feature: blockVault service
   And the number of blockfiles on "peer0.org1.example.com" is 5 on the channel "mychannel2"
   And the number of blockfiles on "peer1.org1.example.com" is 6 on the channel "mychannel1"
   And the number of blockfiles on "peer1.org1.example.com" is 5 on the channel "mychannel2"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 5 on the channel "mychannel1"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 0 on the channel "mychannel2"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 5 on the channel "mychannel1"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 0 on the channel "mychannel2"
 
   When a user invokes 6 times on the channel "mychannel2" using chaincode named "mycc2" with args ["write","131072"] on "peer0.org1.example.com"
   And I wait "10" seconds
@@ -245,8 +245,8 @@ Feature: blockVault service
   And the number of blockfiles on "peer0.org1.example.com" is 6 on the channel "mychannel2"
   And the number of blockfiles on "peer1.org1.example.com" is 6 on the channel "mychannel1"
   And the number of blockfiles on "peer1.org1.example.com" is 6 on the channel "mychannel2"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 5 on the channel "mychannel1"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 5 on the channel "mychannel2"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 5 on the channel "mychannel1"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 5 on the channel "mychannel2"
 
   When a user invokes 6 times on the channel "mychannel1" using chaincode named "mycc1" with args ["write","65536"] on "peer0.org1.example.com"
   And a user invokes 7 times on the channel "mychannel2" using chaincode named "mycc2" with args ["write","131072"] on "peer0.org1.example.com"
@@ -256,8 +256,8 @@ Feature: blockVault service
   And the number of blockfiles on "peer0.org1.example.com" is 6 on the channel "mychannel2"
   And the number of blockfiles on "peer1.org1.example.com" is 6 on the channel "mychannel1"
   And the number of blockfiles on "peer1.org1.example.com" is 6 on the channel "mychannel2"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 11 on the channel "mychannel1"
-  And the number of archived blockfiles on "blkvault-repo.org1.example.com" is 12 on the channel "mychannel2"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 11 on the channel "mychannel1"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 12 on the channel "mychannel2"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"

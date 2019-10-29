@@ -654,8 +654,8 @@ ledger:
     # two consecutive db batches for converting the ineligible missing data entries to eligible missing data entries
     collElgProcDbBatchesInterval: 1000
 
-  blockVault:
-    dir:  /var/hyperledger/production/blockVault
+  blockArchiver:
+    dir:  /var/hyperledger/production/blockArchiver
 
 ###############################################################################
 #

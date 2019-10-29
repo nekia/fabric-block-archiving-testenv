@@ -115,7 +115,7 @@ services:
             - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
             - CORE_PEER_ARCHIVING_ENABLED=${CORE_PEER_ARCHIVING_ENABLED_PEER0_ORG1}
             - CORE_PEER_ARCHIVER_ENABLED=${CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1}
-            - CORE_LEDGER_BLOCKVAULT_URL=${CORE_LEDGER_BLOCKVAULT_URL_ORG1}
+            - CORE_LEDGER_BLOCKARCHIVER_URL=${CORE_LEDGER_BLOCKARCHIVER_URL_ORG1}
         volumes:
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/msp
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/var/hyperledger/tls
@@ -150,7 +150,7 @@ services:
             - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
             - CORE_PEER_ARCHIVING_ENABLED=${CORE_PEER_ARCHIVING_ENABLED_PEER0_ORG2}
             - CORE_PEER_ARCHIVER_ENABLED=${CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG2}
-            - CORE_LEDGER_BLOCKVAULT_URL=${CORE_LEDGER_BLOCKVAULT_URL_ORG2}
+            - CORE_LEDGER_BLOCKARCHIVER_URL=${CORE_LEDGER_BLOCKARCHIVER_URL_ORG2}
         volumes:
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/var/hyperledger/msp
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/var/hyperledger/tls
@@ -184,7 +184,7 @@ services:
             - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
             - CORE_PEER_ARCHIVING_ENABLED=${CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1}
             - CORE_PEER_ARCHIVER_ENABLED=${CORE_PEER_ARCHIVER_ENABLED_PEER1_ORG1}
-            - CORE_LEDGER_BLOCKVAULT_URL=${CORE_LEDGER_BLOCKVAULT_URL_ORG1}
+            - CORE_LEDGER_BLOCKARCHIVER_URL=${CORE_LEDGER_BLOCKARCHIVER_URL_ORG1}
         volumes:
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/var/hyperledger/msp
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/var/hyperledger/tls
@@ -218,7 +218,7 @@ services:
             - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
             - CORE_PEER_ARCHIVING_ENABLED=${CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG2}
             - CORE_PEER_ARCHIVER_ENABLED=${CORE_PEER_ARCHIVER_ENABLED_PEER1_ORG2}
-            - CORE_LEDGER_BLOCKVAULT_URL=${CORE_LEDGER_BLOCKVAULT_URL_ORG2}
+            - CORE_LEDGER_BLOCKARCHIVER_URL=${CORE_LEDGER_BLOCKARCHIVER_URL_ORG2}
         volumes:
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/var/hyperledger/msp
             - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/var/hyperledger/tls
@@ -234,17 +234,17 @@ services:
           - 10051:7051
           - 10053:7053
 
-    blkvault-repo.org1.example.com:
-        container_name: blkvault-repo.org1.example.com
-        image: hyperledger/fabric-blkvault-repo:2.0.0-alpha
+    blkarchiver-repo.org1.example.com:
+        container_name: blkarchiver-repo.org1.example.com
+        image: hyperledger/fabric-blkarchiver-repo:2.0.0-alpha
         networks:
             behave:
                 aliases:
                     - ${CORE_PEER_NETWORKID}
 
-    blkvault-repo.org2.example.com:
-        container_name: blkvault-repo.org2.example.com
-        image: hyperledger/fabric-blkvault-repo:2.0.0-alpha
+    blkarchiver-repo.org2.example.com:
+        container_name: blkarchiver-repo.org2.example.com
+        image: hyperledger/fabric-blkarchiver-repo:2.0.0-alpha
         networks:
             behave:
                 aliases:

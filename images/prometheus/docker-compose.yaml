@@ -6,7 +6,7 @@
 # Start the following containers for monitoring metrics on each peer with prometheus
 #   - Prometheus    (Crawler)
 #   - Grafana       (Visualizer)
-#   - node-exporter (Exporter for blockVault)
+#   - node-exporter (Exporter for BlockArchiver)
 #
 
 version: '2'

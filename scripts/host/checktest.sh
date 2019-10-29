@@ -10,7 +10,7 @@
 echo
 echo
 
-# Verify the blockVault - peer0
+# Verify the BlockArchiver - peer0
 PEER_CMD='peer blockfile verify -c mychannel --mspID Org1MSP --mspPath /etc/hyperledger/fabric/msp'
 json=`docker exec -e CORE_LOGGING_LEVEL=CRITICAL -e FABRIC_LOGGING_SPEC=fatal -it peer0.org1.example.com $PEER_CMD`
 if [ $? -ne 0 ]; then
@@ -26,7 +26,7 @@ if [ $ok != 'true' ]; then
 	exit
 fi
 
-# Verify the blockVault - peer1
+# Verify the BlockArchiver - peer1
 json=`docker exec -e CORE_LOGGING_LEVEL=CRITICAL -e FABRIC_LOGGING_SPEC=fatal -it peer1.org1.example.com $PEER_CMD`
 if [ $? -ne 0 ]; then
 	echo "**** TEST FAILED - Error running: " $PEER_CMD
@@ -48,7 +48,7 @@ fi
 pushd ~/dev/fst-poc-fabric-env >/dev/null
 
 
-# Count the blockVault files for ORG1
+# Count the BlockArchiver files for ORG1
 expected=20
 n=`find ./ledgers-archived/org1 -type f | grep blockfile | grep mychannel | wc -l`
 if [ "$n" -ne "$expected" ]; then
@@ -56,7 +56,7 @@ if [ "$n" -ne "$expected" ]; then
 	exit
 fi
 
-# Count the blockVault files for ORG2
+# Count the BlockArchiver files for ORG2
 expected=20
 n=`find ./ledgers-archived/org2 -type f | grep blockfile | grep mychannel | wc -l`
 if [ "$n" -ne "$expected" ]; then

@@ -18,7 +18,7 @@ function printHelp() {
 }
 
 showStatus() {
-  echo "==== The number of archived blockfiles on blockVault ===="
+  echo "==== The number of archived blockfiles on BlockArchiver ===="
   for ch in ${CHANNELS}; do
     echo "$ch"
     for org in ${ORGS}; do

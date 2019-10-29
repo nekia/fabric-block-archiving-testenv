@@ -54,7 +54,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "blockvault_archived_size",
+          "expr": "blockarchiver_archived_size",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -226,7 +226,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "blockVault Dashboard",
+  "title": "BlockArchiver Dashboard",
   "uid": "A3xlhmrmk",
   "version": 1
 }
