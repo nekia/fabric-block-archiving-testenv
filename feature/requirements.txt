@@ -7,7 +7,7 @@ pyyaml==3.10
 couchdb==1.0
 flask-cors==2.0.1
 requests==2.4.3
-pyOpenSSL==16.2.0
+pyOpenSSL==17.5.0
 pysha3==1.0b1
 ecdsa
 python-slugify
