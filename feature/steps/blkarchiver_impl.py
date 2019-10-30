@@ -44,3 +44,19 @@ def step_impl(context, peer, org, channel):
     print(result[peer])
     jsonobj = json.loads(result[peer], cls=json.JSONDecoder)
     assert jsonobj["pass"] == True, "The data integrity in '{0}' on the channel '{1}' is validated".format(peer, channel)
+
+@when(u'stop "{peer}"')
+def step_impl(context, peer):
+    assert hasattr(context, "composition"), "There are no containers running for this test"
+    context.composition.stop([peer])
+
+@when(u'start "{peer}"')
+def step_impl(context, peer):
+    assert hasattr(context, "composition"), "There are no containers running for this test"
+    context.composition.start([peer])
+
+@when(u'restart "{peer}"')
+def step_impl(context, peer):
+    assert hasattr(context, "composition"), "There are no containers running for this test"
+    context.composition.stop([peer])
+    context.composition.start([peer])

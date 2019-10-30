@@ -262,3 +262,54 @@ Feature: BlockArchiver service
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
+
+@doNotDecompose
+@basic
+  Scenario: Keep working properly even after restarting archiver
+
+  # Select Peer0 of both org as leader and turn leader election off
+  Given the CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG1 environment variable is true
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG2 environment variable is true
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG2 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG2 environment variable is false
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG2 environment variable is false
+  # the size of blockfile is 32KB
+  And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
+  And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
+  # BlockArchiver is working on only Org1
+  And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
+  And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
+  And the CORE_PEER_ARCHIVER_EACH environment variable is 2
+  And the CORE_PEER_ARCHIVER_KEEP environment variable is 1
+  And I have a bootstrapped fabric network of type solo without tls
+
+  When an admin sets up a channel named "mychannel"
+  Then there are no errors
+
+  When an admin deploys chaincode at path "github.com/hyperledger/fabric-test/chaincodes/chaincode_example02/go" with args ["init","a","100","b","200"] with name "mycc" with language "GOLANG" to "peer0.org1.example.com" on channel "mychannel"
+  And a user invokes 10 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
+  And I wait "10" seconds
+
+  # Restart archiver
+  When restart "peer0.org1.example.com"
+  # Restart client
+  And restart "peer1.org1.example.com"
+  And a user invokes 5 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
+  And I wait "10" seconds
+
+  # We expect each peer enabled BlockArchiver has
+  #  ( CORE_PEER_ARCHIVER_KEEP
+  #    + 1(blockfile_000000)
+  #    + ( (the total number of blockfiles - ( CORE_PEER_ARCHIVER_KEEP + 1 ) ) % CORE_PEER_ARCHIVER_EACH ) blockfiles
+  # And also we expect total 4 + 1(blockfile_000000) blockfile have been created
+
+  Then the number of blockfiles on "peer0.org1.example.com" is 2 on the channel "mychannel"
+  And the number of blockfiles on "peer1.org1.example.com" is 2 on the channel "mychannel"
+  And the number of blockfiles on "peer0.org2.example.com" is 16 on the channel "mychannel"
+  And the number of blockfiles on "peer1.org2.example.com" is 16 on the channel "mychannel"
+  And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 14 on the channel "mychannel"
+  And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
+  And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
