@@ -1,13 +1,13 @@
 behave
 nose
-flask==0.10.1
+flask
 python-dateutil==2.2
 pytz==2014.3
-pyyaml==3.10
+pyyaml
 couchdb==1.0
 flask-cors==2.0.1
-requests==2.4.3
-pyOpenSSL==16.2.0
+requests
+pyOpenSSL
 pysha3==1.0b1
 ecdsa
 python-slugify
