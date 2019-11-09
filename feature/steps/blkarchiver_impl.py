@@ -39,11 +39,26 @@ def step_impl(context, peer, num, channel):
 
 @then(u'the data integrity in "{peer}" of "{org}" is valid on the channel "{channel}"')
 def step_impl(context, peer, org, channel):
+    assert hasattr(context, "projectName"), "Any projects haven't been assigned yet"
+    projectName = context.projectName
+
     assert hasattr(context, "composition"), "There are no containers running for this test"
-    result = context.composition.docker_exec(['sh -c "export FABRIC_LOGGING_SPEC=fatal; peer blockfile verify -c {0} --mspID {1} --mspPath /var/hyperledger/msp"'.format(channel, org)], [peer])
-    print(result[peer])
-    jsonobj = json.loads(result[peer], cls=json.JSONDecoder)
-    assert jsonobj["pass"] == True, "The data integrity in '{0}' on the channel '{1}' is validated".format(peer, channel)
+    context.composition.stop([peer])
+
+    curpath = os.path.realpath('.')
+    composeFiles = ["%s/docker-compose/docker-compose-%s.yml" % (curpath, "solo-verify")]
+    verify_peer = "verify.{}".format(peer)
+    context.composition_verify = compose_util.Composition(context, composeFiles,
+                                        projectName=projectName,
+                                        components=[verify_peer],
+                                        startContainers=True)
+
+    result = context.composition_verify.docker_exec(['ledgerfsck --channelName {0} --mspID {1} --mspPath /var/hyperledger/msp'.format(channel, org)], [verify_peer])
+    assert "PASS" in result[verify_peer], "The data integrity in '{0}' on the channel '{1}' is validated".format(peer, channel)
+    context.composition_verify.stop([verify_peer])
+
+    context.composition.start([peer])
+
 
 @when(u'stop "{peer}"')
 def step_impl(context, peer):

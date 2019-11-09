@@ -12,8 +12,8 @@ version: '2'
 #   peer0.org2.example.com:
 #   peer1.org2.example.com:
 
-networks:
-  byfn:
+# networks:
+#   byfn:
 
 services:
 
@@ -24,12 +24,59 @@ services:
       service: peer0.org1.example.com
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=false
-      - CORE_PEER_ARCHIVER_ENABLED=true
+      - CORE_PEER_ARCHIVER_ENABLED=false
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
-      - CORE_PEER_GOSSIP_USELEADERELECTION=false
-      - CORE_PEER_GOSSIP_ORGLEADER=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
     networks:
       - byfn
     tty: true
     command: sh
 
+  verify.peer1.org1.example.com:
+    container_name: verify.peer1.org1.example.com
+    extends:
+      file:  docker-compose-cli.yaml
+      service: peer1.org1.example.com
+    environment:
+      - CORE_PEER_ARCHIVING_ENABLED=false
+      - CORE_PEER_ARCHIVER_ENABLED=false
+      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+    networks:
+      - byfn
+    tty: true
+    command: sh
+
+  verify.peer0.org2.example.com:
+    container_name: verify.peer0.org2.example.com
+    extends:
+      file:  docker-compose-cli.yaml
+      service: peer0.org2.example.com
+    environment:
+      - CORE_PEER_ARCHIVING_ENABLED=false
+      - CORE_PEER_ARCHIVER_ENABLED=false
+      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+    networks:
+      - byfn
+    tty: true
+    command: sh
+
+  verify.peer1.org2.example.com:
+    container_name: verify.peer1.org2.example.com
+    extends:
+      file:  docker-compose-cli.yaml
+      service: peer1.org2.example.com
+    environment:
+      - CORE_PEER_ARCHIVING_ENABLED=false
+      - CORE_PEER_ARCHIVER_ENABLED=false
+      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+    networks:
+      - byfn
+    tty: true
+    command: sh

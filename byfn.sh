@@ -31,6 +31,7 @@
 export PATH=${PWD}/bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
+export REMOVELEDGER=false
 
 # Print the usage message
 function printHelp() {
@@ -540,7 +541,7 @@ else
   exit 1
 fi
 
-while getopts "h?c:t:d:f:s:l:i:o:v" opt; do
+while getopts "h?c:t:d:f:s:l:i:o:vr" opt; do
   case "$opt" in
   h | \?)
     printHelp
@@ -573,6 +574,9 @@ while getopts "h?c:t:d:f:s:l:i:o:v" opt; do
   v)
     VERBOSE=true
     ;;
+  r)
+    REMOVELEDGER=true
+    ;;
   esac
 done
 
@@ -585,8 +589,17 @@ if [ "${IF_COUCHDB}" == "couchdb" ]; then
 else
   echo "${EXPMODE} for channel '${CHANNEL_NAME}' with CLI timeout of '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds"
 fi
+
+if [ ${REMOVELEDGER} ]; then
+  echo "CAUTION: All ledger including archived ones will be removed..."
+fi
+
 # ask for confirmation to proceed
 askProceed
+
+if [ ${REMOVELEDGER} ]; then
+  sudo rm -rf ledgers ledgers-archived/
+fi
 
 #Create the network using docker compose
 if [ "${MODE}" == "up" ]; then
