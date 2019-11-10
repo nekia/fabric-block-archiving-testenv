@@ -82,12 +82,12 @@ def after_scenario(context, scenario):
                                                                                       context.compose_yaml))
     elif 'composition' in context:
         # Remove config data and docker containers
-        shutil.rmtree("configs/%s" % context.composition.projectName)
+        shutil.rmtree("configs/%s" % context.composition.projectName, ignore_errors=True)
         shutil.rmtree("/tmp/fabric-client-kvs_org1", ignore_errors=True)
         shutil.rmtree("/tmp/fabric-client-kvs_org2", ignore_errors=True)
         context.composition.decompose()
     elif hasattr(context, 'projectName'):
-        shutil.rmtree("configs/%s" % context.projectName)
+        shutil.rmtree("configs/%s" % context.projectName, ignore_errors=True)
 
     # Print memory information after every scenario
     memory = subprocess.check_output(["df", "-h"], shell=True)

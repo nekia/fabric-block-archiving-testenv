@@ -590,14 +590,14 @@ else
   echo "${EXPMODE} for channel '${CHANNEL_NAME}' with CLI timeout of '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds"
 fi
 
-if [ ${REMOVELEDGER} ]; then
+if [ ${REMOVELEDGER} == "true" ]; then
   echo "CAUTION: All ledger including archived ones will be removed..."
 fi
 
 # ask for confirmation to proceed
 askProceed
 
-if [ ${REMOVELEDGER} ]; then
+if [ ${REMOVELEDGER} == "true" ]; then
   sudo rm -rf ledgers ledgers-archived/
 fi
 

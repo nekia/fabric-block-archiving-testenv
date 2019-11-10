@@ -12,8 +12,8 @@ version: '2'
 #   peer0.org2.example.com:
 #   peer1.org2.example.com:
 
-# networks:
-#   byfn:
+networks:
+  byfn:
 
 services:
 
@@ -28,6 +28,8 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
+      - FABRIC_LOGGING_SPEC=ledgerfsck=info:fatal
+      - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
     tty: true
@@ -44,6 +46,8 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
+      - FABRIC_LOGGING_SPEC=ledgerfsck=info:fatal
+      - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
     tty: true
@@ -60,6 +64,8 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
+      - FABRIC_LOGGING_SPEC=ledgerfsck=info:fatal
+      - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
     tty: true
@@ -76,6 +82,8 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
+      - FABRIC_LOGGING_SPEC=ledgerfsck=info:fatal
+      - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
     tty: true

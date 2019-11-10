@@ -47,9 +47,13 @@ verifyChain() {
       echo "  $org"
       for peer in ${PEERS}; do
         CONTAINER_NAME=$peer.$org.example.com
+        docker stop ${CONTAINER_NAME} > /dev/null 2>&1
+        docker-compose -f $DIR/../../docker-compose-cli-verify.yaml up -d verify.${CONTAINER_NAME} > /dev/null 2>&1
         MSPID=`echo $org | sed -e 's/^./\U&\E/'`MSP
         echo -n "    $peer: "
-        docker exec -e FABRIC_LOGGING_SPEC=CRITICAL -it ${CONTAINER_NAME}  peer blockfile verify -c ${ch} --mspID ${MSPID} --mspPath /etc/hyperledger/fabric/msp
+        docker exec -it verify.${CONTAINER_NAME} ledgerfsck --channelName ${ch} --mspID ${MSPID} --mspPath /etc/hyperledger/fabric/msp
+        docker rm -f verify.${CONTAINER_NAME} > /dev/null 2>&1
+        docker start ${CONTAINER_NAME} > /dev/null 2>&1
       done
     done
   done
