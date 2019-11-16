@@ -1,0 +1,93 @@
+# - name: Create bundle for Raspberry Pi
+#   hosts: misc
+#   connection: local
+
+#   tasks:
+#     - name: Bundle repository
+#       shell: git bundle create ./deploy.bundle an/FBAAS-113-deploy-on-rpi3-network
+#       args:
+#         chdir: ~/go/src/github.com/hyperledger/fabric
+
+- name: Build fabric-peer container image
+  hosts: peers
+  # hosts: peer0.org1.example.com
+
+  vars:
+    peer_envs:
+      PATH: "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/usr/sbin:/usr/local/go/bin:/home/pi/go/src/github.com/hyperledger/fabric/.build/bin:/home/pi/go/bin"
+      GOPATH: "/home/pi/go"
+
+  tasks:
+    - git:
+        repo: https://github.com/nekia/fabric-block-archiving-2.git
+        dest: ~/go/src/github.com/hyperledger/fabric
+
+    # - name: Backup current fabric directory
+    #   shell: mv ~/go/src/github.com/hyperledger/fabric ~/go/src/github.com/hyperledger/fabric_backup_{{ansible_date_time.iso8601}}
+
+    # - name: Clone repository
+    #   shell: git clone /home/pi/ws/deploy.bundle -b an/FBAAS-113-deploy-on-rpi3-network fabric
+    #   args:
+    #     chdir: ~/go/src/github.com/hyperledger/ 
+
+    # - name: Copy patch for RPI3 building
+    #   copy:
+    #     src: "./misc/fabric-build-rpi.patch"
+    #     dest: "~/go/src/github.com/hyperledger/fabric"
+
+    # - name: Apply patch
+    #   shell: patch -p1 < ./fabric-build-rpi.patch
+    #   args:
+    #     chdir: ~/go/src/github.com/hyperledger/fabric
+
+    - name: Build docker images
+      shell: make peer-docker
+      args:
+        chdir: ~/go/src/github.com/hyperledger/fabric
+        executable: /bin/bash
+      environment: "{{ peer_envs }}"
+
+    # - name: Configure Insecure Local docker Registry
+    #   copy:
+    #     src: "./misc/daemon.json"
+    #     dest: "/etc/docker"
+    #   become: True
+
+    # - name: Restart docker service
+    #   systemd:
+    #     state: restarted
+    #     name: docker
+    #   become: True
+
+    # - name: Login local docker registry
+    #   docker_login:
+    #     username: admin
+    #     password: admin
+    #     registry_url: misc.example.com:5000
+
+    # - name: Tag the latest fabric-peer images
+    #   shell: docker tag hyperledger/fabric-peer:arm64-latest misc.example.com:5000/hyperledger/fabric-peer:arm64-latest
+
+    # - name: Push peer image
+    #   docker_image:
+    #     name: misc.example.com:5000/hyperledger/fabric-peer
+    #     tag: arm64-latest
+    #     push: yes
+
+    # - name: Tag the latest fabric-orderer images
+    #   shell: docker tag hyperledger/fabric-orderer:arm64-latest misc.example.com:5000/hyperledger/fabric-orderer:arm64-latest
+
+    # - name: Push orderer image
+    #   docker_image:
+    #     name: misc.example.com:5000/hyperledger/fabric-orderer
+    #     tag: arm64-latest
+    #     push: yes
+
+    # - name: Tag the latest fabric-tools images
+    #   shell: docker tag hyperledger/fabric-tools:arm64-latest misc.example.com:5000/hyperledger/fabric-tools:arm64-latest
+
+    # - name: Push tools image
+    #   docker_image:
+    #     name: misc.example.com:5000/hyperledger/fabric-tools
+    #     tag: arm64-latest
+    #     push: yes

@@ -1,0 +1,34 @@
+- name: Start Peer node
+  hosts: peers:orderer
+
+  vars:
+    peer_envs:
+      IMAGE_TAG: "arm64-latest"
+
+  tasks:
+    - name: Shutdown peer
+      docker_service:
+        project_src: "/home/pi/ws/"
+        files:
+          - "docker-compose-deploy.yaml"
+        services:
+          - "{{ inventory_hostname }}"
+        state: absent
+      environment: "{{ peer_envs }}"
+
+    - name: Delete persistent ledger data
+      file:
+        path: /home/pi/ws/ledgers
+        state: absent
+      become: True
+
+    - name: Fire up peer
+      docker_service:
+        project_src: "/home/pi/ws/"
+        files:
+          - "docker-compose-deploy.yaml"
+        services:
+          - "{{ inventory_hostname }}"
+        state: present
+      environment: "{{ peer_envs }}"
+

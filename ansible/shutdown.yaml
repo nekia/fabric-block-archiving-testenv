@@ -1,0 +1,10 @@
+- name: Shutdown all node
+  hosts: orderer:peers
+
+  tasks:
+  - name: Shutdown machine
+    shell: sleep 2 && shutdown -h now "Bye"
+    async: 1
+    poll: 0
+    become: True
+    ignore_errors: true

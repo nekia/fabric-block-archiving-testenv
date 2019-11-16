@@ -1,0 +1,57 @@
+- name: Deploy Fabric Network
+  hosts: misc
+  connection: local
+
+  tasks:
+    - name: install pexpect
+      pip:
+        name: pexpect
+      become: yes
+
+    - name: Generate artifacts
+      expect:
+        command: ./byfn.sh -m generate -c mychannel
+        chdir: ../
+        responses:
+          Continue: "y"
+
+    - name: Install jq
+      apt:
+        name: jq
+        # update_cache: yes
+      become: yes
+
+    # - name: Add a repository for yq
+    #   apt_repository:
+    #     repo: ppa:rmescandon/yq
+    #     state: present
+    #   become: yes
+
+    - name: Install yq
+      apt:
+        name: yq
+        # update_cache: yes
+      become: yes
+
+    - name: Generate docker-compose file for deployment
+      shell: yq r -j docker-compose-cli.yaml | jq 'del(.services[].networks)' | jq '.services[].network_mode |= . + "host"' | jq '.services["cli"].volumes[1] |= "./chaincode/:/opt/gopath/src/github.com/chaincode"' | yq r - > ansible/misc/docker-compose-deploy.yaml
+      args:
+        chdir: ../
+      
+    - name: Generate peer-base file for deployment
+      shell: |+
+        yq r -j base/peer-base.yaml | \
+        jq '.services["peer-base"].environment[1] |= "CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=host"' | \
+        yq r - > ansible/misc/peer-base-deploy.yaml
+      args:
+        chdir: ../
+
+    - name: Generate docker-compose-base file for deployment
+      shell: |+
+        yq r -j base/docker-compose-base.yaml | \
+        jq . | \
+        sed -e "s|/data/org[0-9]\+/peer[0-9]\+/ledgers|/data|" \
+            -e "s|/data/org[0-9]\+/peer[0-9]\+/others|/data-others|" | \
+        yq r - > ansible/misc/docker-compose-base-deploy.yaml
+      args:
+        chdir: ../

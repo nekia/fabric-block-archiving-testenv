@@ -1,0 +1,87 @@
+- name: Start Peer node
+  hosts: peers:orderer
+
+  vars:
+    peer_envs:
+      IMAGE_TAG: "arm64-latest"
+
+  tasks:
+
+    - name: Delete existing ledger data(1)
+      file:
+        path: /data/ledgers
+        state: absent
+      become: True
+
+    - name: Delete existing ledger data(2)
+      file:
+        path: /home/pi/ws/ledgers
+        state: absent
+      become: True
+
+    - name: Remove existing containers
+      shell: docker rm -f $(docker ps -qa)
+      ignore_errors: True
+
+    - name: Remove existing cc container image
+      shell: docker rmi $(docker images -q dev-peer*)
+      ignore_errors: True
+
+    - name: Fire up peer
+      docker_service:
+        project_src: "/home/pi/ws/"
+        files:
+          - "docker-compose-deploy.yaml"
+        services:
+          - "{{ inventory_hostname }}"
+        state: present
+      environment: "{{ peer_envs }}"
+
+- name: Start CLI
+  hosts: orderer
+
+  vars:
+    peer_envs:
+      IMAGE_TAG: "arm64-latest"
+
+  tasks:
+    - name: Fire up cli
+      docker_service:
+        project_src: "/home/pi/ws/"
+        files:
+          - "docker-compose-deploy.yaml"
+        services:
+          - "cli"
+        state: present
+      environment: "{{ peer_envs }}"
+
+- name: Start node exporter container
+  hosts: peer0.org1.example.com
+
+  tasks:
+    - name: Fire up node-exporter
+      docker_service:
+        project_src: "/home/pi/ws/"
+        files:
+          - "docker-compose-node-exporter.yaml"
+        services:
+          - "node-exporter"
+        state: present
+
+- name: Start node exporter native binary
+  hosts: peer1.org1.example.com:peer2.org1.example.com
+
+  tasks:
+    - name: Check if node_exporter process is running
+      shell: ps auxw | grep node_exporter | grep -v grep
+      register: result
+      failed_when: result.rc == 1
+      ignore_errors: True
+
+    - name: Start node_exporter
+      shell: /home/pi/node_exporter &
+      async: 2
+      poll: 0
+      when: result is failed
+
+

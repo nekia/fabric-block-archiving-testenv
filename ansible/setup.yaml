@@ -1,0 +1,146 @@
+- name: Set up environment on eacy node
+  hosts: orderer:peers
+
+  vars:
+    peer_envs:
+      IMAGE_TAG: "arm64-latest"
+
+  tasks:
+    - name: Delete existing artifacts
+      file:
+        path: /home/pi/ws
+        state: absent
+      become: True
+
+    - name: Copy artifacts (crypto)
+      synchronize: src=../crypto-config dest=/home/pi/ws
+
+    - name: Copy artifacts (genesis)
+      synchronize: src=../channel-artifacts dest=/home/pi/ws
+
+    - name: Copy artifacts (scripts)
+      synchronize: src=../scripts dest=/home/pi/ws
+
+    - name: Copy artifacts (chaincode)
+      synchronize: src=../../chaincode dest=/home/pi/ws
+
+    - name: Create directory
+      file:
+        path: "/home/pi/ws/base"
+        state: directory
+
+    - name: Copy docker-compose.yaml
+      copy:
+        src: "../{{ item }}"
+        dest: "/home/pi/ws/{{item}}"
+        mode: 0755
+      with_items:
+        - "core.yaml"
+        - "getusage.sh"
+
+    - name: Copy docker-compose.yaml for deployment
+      copy:
+        src: "./misc/docker-compose-deploy.yaml"
+        dest: "/home/pi/ws/"
+
+    - name: Copy peer-base.yaml for deployment
+      copy:
+        src: "./misc/peer-base-deploy.yaml"
+        dest: "/home/pi/ws/base/peer-base.yaml"
+
+    - name: Copy docker-compose-base.yaml for deployment
+      copy:
+        src: "./misc/docker-compose-base-deploy.yaml"
+        dest: "/home/pi/ws/base/docker-compose-base.yaml"
+
+    - name: Copy docker-compose for node-exporter
+      copy:
+        src: "./misc/docker-compose-node-exporter.yaml"
+        dest: "/home/pi/ws/docker-compose-node-exporter.yaml"
+
+    - name: Uninstall docker python module
+      pip:
+        name: docker
+        state: absent
+      become: True
+
+    - name: uninstall docker-py python module
+      pip:
+        name: docker-py
+        state: absent
+      become: True
+
+    - name: Install docker-compose python module
+      pip:
+        name: docker-compose
+      become: True
+
+    - name: Configure Insecure Local docker Registry
+      copy:
+        src: "./misc/daemon.json"
+        dest: "/etc/docker"
+      become: True
+
+    - name: Restart docker service
+      systemd:
+        state: restarted
+        name: docker
+      become: True
+
+    - name: Login local docker registry
+      docker_login:
+        username: admin
+        password: admin
+        registry_url: misc.example.com:5000
+
+    - name: Remove images
+      docker_image:
+        name: "{{ item }}"
+        tag: arm64-latest
+        state: absent
+        force: yes
+        pull: no
+      with_items:
+        - misc.example.com:5000/hyperledger/fabric-peer
+        - hyperledger/fabric-peer
+        - misc.example.com:5000/hyperledger/fabric-orderer
+        - hyperledger/fabric-orderer
+        - misc.example.com:5000/hyperledger/fabric-tools
+        - hyperledger/fabric-tools
+
+    - name: Pull the latest fabric-orderer images
+      docker_image:
+        name: misc.example.com:5000/hyperledger/fabric-orderer
+        tag: arm64-latest
+
+    - name: Tag the latest fabric-orderer images
+      docker_image:
+        name: misc.example.com:5000/hyperledger/fabric-orderer
+        repository: hyperledger/fabric-orderer
+        tag: arm64-latest
+        pull: no
+
+    - name: Pull the latest fabric-tools images
+      docker_image:
+        name: misc.example.com:5000/hyperledger/fabric-tools
+        tag: arm64-latest
+
+    - name: Tag the latest fabric-tools images
+      docker_image:
+        name: misc.example.com:5000/hyperledger/fabric-tools
+        repository: hyperledger/fabric-tools
+        tag: arm64-latest
+        pull: no
+
+    - name: Pull the latest fabric-peer images
+      docker_image:
+        name: misc.example.com:5000/hyperledger/fabric-peer
+        tag: arm64-latest
+
+    - name: Tag the latest fabric-peer images
+      docker_image:
+        name: misc.example.com:5000/hyperledger/fabric-peer
+        repository: hyperledger/fabric-peer
+        tag: arm64-latest
+        pull: no
+

@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  node-exporter:
+    container_name: node-exporter
+    image: misc.example.com:5000/rycus86/prometheus-node-exporter:aarch64
+    network_mode: "host"

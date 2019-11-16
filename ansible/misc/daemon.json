@@ -1,0 +1,3 @@
+{
+  "insecure-registries" : ["misc.example.com:5000"]
+}

@@ -1,0 +1,5 @@
+- import_playbook: createhosts.yaml
+- import_playbook: buildimages.yaml
+- import_playbook: genartifacts.yaml
+- import_playbook: setup.yaml
+- import_playbook: startnode.yaml

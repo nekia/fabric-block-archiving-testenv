@@ -1,0 +1,15 @@
+diff --git a/Makefile b/Makefile
+index 4bc55253a..5272574e5 100755
+--- a/Makefile
++++ b/Makefile
+@@ -46,7 +46,9 @@
+ BASE_VERSION = 1.2.1
+ PREV_VERSION = 1.2.0
+ CHAINTOOL_RELEASE=1.1.1
+-BASEIMAGE_RELEASE=0.4.10
++#BASEIMAGE_RELEASE=0.4.10
++BASEIMAGE_RELEASE=0.4.15-snapshot-944f7a6
++
+ 
+ # Allow to build as a submodule setting the main project to
+ # the PROJECT_NAME env variable, for example,
