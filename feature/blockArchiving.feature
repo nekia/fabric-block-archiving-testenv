@@ -263,7 +263,7 @@ Feature: BlockArchiver service
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
 
-@doNotDecompose
+# @doNotDecompose
 @basic
   Scenario: Keep working properly even after restarting archiver
 
@@ -313,3 +313,47 @@ Feature: BlockArchiver service
   And the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 14 on the channel "mychannel"
   And the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
+
+# @doNotDecompose
+@error
+  Scenario: Keep running without any crashes when the archiving repository is not reachable
+
+  # Select Peer0 of both org as leader and turn leader election off
+  Given the CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG1 environment variable is true
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG2 environment variable is true
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG2 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG2 environment variable is false
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG2 environment variable is false
+  # the size of blockfile is 32KB
+  And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
+  And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
+  # BlockArchiver is working on only Org1
+  And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
+  And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
+  And the CORE_PEER_ARCHIVER_EACH environment variable is 2
+  And the CORE_PEER_ARCHIVER_KEEP environment variable is 1
+  And I have a bootstrapped fabric network of type solo without tls
+
+  When an admin sets up a channel named "mychannel"
+  Then there are no errors
+
+  When an admin deploys chaincode at path "github.com/hyperledger/fabric-test/chaincodes/chaincode_example02/go" with args ["init","a","100","b","200"] with name "mycc" with language "GOLANG" to "peer0.org1.example.com" on channel "mychannel"
+  And a user invokes 10 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
+  And I wait "10" seconds
+
+  # Delete the newest blockfile
+  When delete archived blockfile "blockfile_000006" on "mychannel" from "blkarchiver-repo.org1.example.com"
+  When fetch block "7" on "mychannel" from "peer0.org1.example.com"
+  Then the logs on "peer0.org1.example.com" contains "blockfile_000006: file does not exist" within 3 seconds
+
+  When delete archived blockfile "blockfile_000010" on "mychannel" from "peer0.org1.example.com"
+  When fetch block "11" on "mychannel" from "peer0.org1.example.com"
+  Then the logs on "peer0.org1.example.com" contains "blockfile_000010: file does not exist" within 3 seconds
+
+  When a user invokes 1 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
+  When fetch block "12" on "mychannel" from "peer0.org1.example.com"
+  Then the logs on "peer0.org1.example.com" contains "\[mychannel\] Committed block \[12\]" within 3 seconds
+  Then "peer0.org1.example.com" is still alive

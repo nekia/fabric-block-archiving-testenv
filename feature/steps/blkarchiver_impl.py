@@ -75,3 +75,22 @@ def step_impl(context, peer):
     assert hasattr(context, "composition"), "There are no containers running for this test"
     context.composition.stop([peer])
     context.composition.start([peer])
+
+@when(u'delete archived blockfile "{rmfilepath}" on "{channel}" from "{peer}"')
+def step_impl(context, rmfilepath, channel, peer):
+    assert hasattr(context, "composition"), "There are no containers running for this test"
+    result = context.composition.docker_exec(['sh', '-c', '"find / -type f | grep {} | grep {} | xargs -I[] mv [] /tmp"'.format(rmfilepath, channel)], [peer])
+
+@when(u'fetch block "{blocknum}" on "{channel}" from "{peer}"')
+def step_impl(context, blocknum, channel, peer):
+    assert hasattr(context, "composition"), "There are no containers running for this test"
+    result = context.composition.docker_exec(['peer', 'channel', 'fetch', blocknum, 'fetch{}.block'.format(blocknum), '-c', channel], [peer])
+
+@then(u'"{peer}" is still alive')
+def step_impl(context, peer):
+    assert hasattr(context, "composition"), "There are no containers running for this test"
+    command = ["ps", "--filter", "status=running", "--services"]
+    print(command)
+    result = context.composition.issueCommand(command)
+    print("result : {}".format(result))
+    assert peer in result,  "{} is not alive".format(peer)
