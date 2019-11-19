@@ -76,7 +76,7 @@ def step_impl(context, peer):
     context.composition.stop([peer])
     context.composition.start([peer])
 
-@when(u'delete archived blockfile "{rmfilepath}" on "{channel}" from "{peer}"')
+@when(u'delete blockfile "{rmfilepath}" on "{channel}" from "{peer}"')
 def step_impl(context, rmfilepath, channel, peer):
     assert hasattr(context, "composition"), "There are no containers running for this test"
     result = context.composition.docker_exec(['sh', '-c', '"find / -type f | grep {} | grep {} | xargs -I[] mv [] /tmp"'.format(rmfilepath, channel)], [peer])
