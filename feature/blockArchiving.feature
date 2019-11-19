@@ -364,7 +364,7 @@ Feature: BlockArchiver service
   Then the logs on "peer0.org1.example.com" contains "\[mychannel\] Committed block \[12\]" within 3 seconds
   Then "peer0.org1.example.com" is still alive
 
-@doNotDecompose
+# @doNotDecompose
 @error
   Scenario: Keep running without any crashes when the archiving repository is not reachable
 
@@ -380,7 +380,7 @@ Feature: BlockArchiver service
   # the size of blockfile is 32KB
   And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
   And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
-  # BlockArchiver is working on only Org1
+
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG1 environment variable is true
   And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG2 environment variable is true
@@ -431,6 +431,88 @@ Feature: BlockArchiver service
   Then the number of blockfiles on "peer1.org2.example.com" is 2 on the channel "mychannel"
   Then the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 18 on the channel "mychannel"
   Then the number of archived blockfiles on "blkarchiver-repo.org2.example.com" is 18 on the channel "mychannel"
+  Then the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
+  Then the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
+  Then the data integrity in "peer0.org2.example.com" of "org2.example.com" is valid on the channel "mychannel"
+  Then the data integrity in "peer1.org2.example.com" of "org2.example.com" is valid on the channel "mychannel"
+
+# @doNotDecompose
+@error
+  Scenario: Keep running without any crashes after stop of archiver
+
+  # Select Peer0 of both org as leader and turn leader election off
+  Given the CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG1 environment variable is true
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG2 environment variable is true
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG2 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG1 environment variable is false
+  And the CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG2 environment variable is false
+  And the CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG2 environment variable is false
+  # the size of blockfile is 32KB
+  And the CORE_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
+  And the ORDERER_LEDGER_MAXBLOCKFILESIZE environment variable is 32768
+  # peer0.org1 : archiver, peer1.org1 : client
+  And the CORE_PEER_ARCHIVING_ENABLED_PEER0_ORG1 environment variable is true
+  And the CORE_PEER_ARCHIVER_ENABLED_PEER1_ORG1 environment variable is true
+  And the CORE_PEER_ARCHIVER_ENABLED_PEER0_ORG2 environment variable is true
+  And the CORE_PEER_ARCHIVING_ENABLED_PEER1_ORG2 environment variable is true
+  And the CORE_PEER_ARCHIVER_EACH environment variable is 2
+  And the CORE_PEER_ARCHIVER_KEEP environment variable is 1
+  And I have a bootstrapped fabric network of type solo without tls
+
+  When an admin sets up a channel named "mychannel"
+  Then there are no errors
+
+  When an admin deploys chaincode at path "github.com/hyperledger/fabric-test/chaincodes/chaincode_example02/go" with args ["init","a","100","b","200"] with name "mycc" with language "GOLANG" to "peer0.org1.example.com" on channel "mychannel"
+  And a user invokes 10 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
+  And I wait "10" seconds
+
+  # Make sure blockfile are still growing on local without any errors
+  Then the number of blockfiles on "peer0.org1.example.com" is 3 on the channel "mychannel"
+  Then the number of blockfiles on "peer1.org1.example.com" is 3 on the channel "mychannel"
+  # Make sure that there is no effects on Org2
+  Then the number of blockfiles on "peer0.org2.example.com" is 3 on the channel "mychannel"
+  Then the number of blockfiles on "peer1.org2.example.com" is 3 on the channel "mychannel"
+
+  # Stop archiver (peer1.org1)
+  When stop "peer1.org1.example.com"
+
+  # Generate block(file) without access to the repository
+  When a user invokes 5 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
+  When I wait "10" seconds
+
+  # Make sure blockfile are still growing on local without any errors
+  Then the number of blockfiles on "peer0.org1.example.com" is 8 on the channel "mychannel"
+  # Then the number of blockfiles on "peer1.org1.example.com" is 8 on the channel "mychannel"
+  # Make sure that there is no effects on Org2
+  Then the number of blockfiles on "peer0.org2.example.com" is 2 on the channel "mychannel"
+  Then the number of blockfiles on "peer1.org2.example.com" is 2 on the channel "mychannel"
+
+  Then "peer0.org1.example.com" is still alive
+  # Then "peer1.org1.example.com" is still alive
+  Then "peer0.org2.example.com" is still alive
+  Then "peer1.org2.example.com" is still alive
+
+  # Start archiver (peer1.org1)
+  When start "peer1.org1.example.com"
+
+  # Generate block(file) without access to the repository
+  When a user invokes 10 times on the channel "mychannel" using chaincode named "mycc" with args ["write","65536"] on "peer0.org1.example.com"
+  When I wait "10" seconds
+
+  # Make sure blockfile are still growing on local without any errors
+  Then the number of blockfiles on "peer0.org1.example.com" is 2 on the channel "mychannel"
+  Then the number of blockfiles on "peer1.org1.example.com" is 2 on the channel "mychannel"
+  # Make sure that there is no effects on Org2
+  Then the number of blockfiles on "peer0.org2.example.com" is 2 on the channel "mychannel"
+  Then the number of blockfiles on "peer1.org2.example.com" is 2 on the channel "mychannel"
+  Then the number of archived blockfiles on "blkarchiver-repo.org1.example.com" is 24 on the channel "mychannel"
+  Then the number of archived blockfiles on "blkarchiver-repo.org2.example.com" is 24 on the channel "mychannel"
+  Then "peer0.org1.example.com" is still alive
+  Then "peer1.org1.example.com" is still alive
+  Then "peer0.org2.example.com" is still alive
+  Then "peer1.org2.example.com" is still alive
   Then the data integrity in "peer0.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
   Then the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel"
   Then the data integrity in "peer0.org2.example.com" of "org2.example.com" is valid on the channel "mychannel"
