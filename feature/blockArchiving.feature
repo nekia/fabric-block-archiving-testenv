@@ -142,6 +142,7 @@ Feature: BlockArchiver service
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel1"
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
 
+@ci
 @basic
   Scenario: Start archiving under multiple organization env and multiple channel.
 
@@ -264,6 +265,7 @@ Feature: BlockArchiver service
   And the data integrity in "peer1.org1.example.com" of "org1.example.com" is valid on the channel "mychannel2"
 
 # @doNotDecompose
+@ci
 @basic
   Scenario: Keep working properly even after restarting archiver
 
