@@ -120,7 +120,7 @@ packageChaincode() {
   ORG=$3
   setGlobals $PEER $ORG
   set -x
-  peer lifecycle chaincode package mycc.tar.gz --path ${CC_SRC_PATH} --lang ${LANGUAGE} --label mycc_${VERSION} >&log.txt
+  peer lifecycle chaincode package mycc.tar.gz --path ${CC_SRC_PATH} --lang ${CC_RUNTIME_LANGUAGE} --label mycc_${VERSION} >&log.txt
   res=$?
   set +x
   cat log.txt
@@ -211,14 +211,14 @@ commitChaincodeDefinition() {
   echo
 }
 
-# queryStatus VERSION PEER ORG
-queryStatus() {
+# checkCommitReadiness VERSION PEER ORG
+checkCommitReadiness() {
   VERSION=$1
   PEER=$2
   ORG=$3
   shift 3
   setGlobals $PEER $ORG
-  echo "===================== Querying approval status on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'... ===================== "
+  echo "===================== Checking the commit readiness of the chaincode definition on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'... ===================== "
   local rc=1
   local starttime=$(date +%s)
 
@@ -228,9 +228,9 @@ queryStatus() {
     test "$(($(date +%s) - starttime))" -lt "$TIMEOUT" -a $rc -ne 0
   do
     sleep $DELAY
-    echo "Attempting to Query approval status on peer${PEER}.org${ORG} ...$(($(date +%s) - starttime)) secs"
+    echo "Attempting to check the commit readiness of the chaincode definition on peer${PEER}.org${ORG} ...$(($(date +%s) - starttime)) secs"
     set -x
-    peer lifecycle chaincode queryapprovalstatus --channelID $CHANNEL_NAME --name mycc $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} --init-required >&log.txt
+    peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name mycc $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} --output json --init-required >&log.txt
     res=$?
     set +x
     test $res -eq 0 || continue
@@ -243,9 +243,9 @@ queryStatus() {
   echo
   cat log.txt
   if test $rc -eq 0; then
-    echo "===================== Query approval status successful on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' ===================== "
+    echo "===================== Checking the commit readiness of the chaincode definition successful on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' ===================== "
   else
-    echo "!!!!!!!!!!!!!!! Query approval status result on peer${PEER}.org${ORG} is INVALID !!!!!!!!!!!!!!!!"
+    echo "!!!!!!!!!!!!!!! Check commit readiness result on peer${PEER}.org${ORG} is INVALID !!!!!!!!!!!!!!!!"
     echo "================== ERROR !!! FAILED to execute End-2-End Scenario =================="
     echo
     exit 1
@@ -484,5 +484,5 @@ chaincodeWrite() {
   cat log.txt
   verifyResult $res "Invoke execution on $PEERS failed "
   echo "===================== Invoke transaction successful on $PEERS on channel '$CHANNEL_NAME' ===================== "
-  echo
-}
+   echo
+ }
