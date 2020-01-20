@@ -51,7 +51,7 @@ verifyChain() {
         docker-compose -f $DIR/../../docker-compose-cli-verify.yaml up -d verify.${CONTAINER_NAME} > /dev/null 2>&1
         MSPID=`echo $org | sed -e 's/^./\U&\E/'`MSP
         echo -n "    $peer: "
-        docker exec -it verify.${CONTAINER_NAME} ledgerfsck --channelName ${ch} --mspID ${MSPID} --mspPath /etc/hyperledger/fabric/msp
+        docker exec -it verify.${CONTAINER_NAME} peer verify start --channelID $ch
         docker rm -f verify.${CONTAINER_NAME} > /dev/null 2>&1
         docker start ${CONTAINER_NAME} > /dev/null 2>&1
       done
