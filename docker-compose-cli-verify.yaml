@@ -28,7 +28,7 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
-      - FABRIC_LOGGING_SPEC=fatal
+      - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
       - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
@@ -46,7 +46,7 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
-      - FABRIC_LOGGING_SPEC=fatal
+      - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
       - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
@@ -64,7 +64,7 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
-      - FABRIC_LOGGING_SPEC=fatal
+      - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
       - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
@@ -82,7 +82,7 @@ services:
       - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
-      - FABRIC_LOGGING_SPEC=fatal
+      - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
       - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn

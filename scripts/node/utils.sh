@@ -463,7 +463,7 @@ chaincodeWrite() {
     CCARGS='{"Args":["Init","a","100","b","100"]}'
     INIT_ARG="--isInit"
   else
-    CCARGS='{"Args":["write","102400"]}'
+    CCARGS='{"Args":["write","16384"]}'
     INIT_ARG=""
   fi
 
