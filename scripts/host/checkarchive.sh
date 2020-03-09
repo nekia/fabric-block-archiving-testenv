@@ -34,7 +34,7 @@ showStatus() {
       echo "  $org"
       for peer in ${PEERS}; do
         echo -n "    $peer: "
-        sh -c 'find '${LOCAL_LEDGER_DIR}' -type f | grep blockfile | grep -E "\b'$ch'\b" | grep -E "\b'$org'\b" | grep -E "\b'$peer'\b" | wc -l'
+        sh -c 'find '${LOCAL_LEDGER_DIR}' -type f 2>/dev/null | grep blockfile | grep -E "\b'$ch'\b" | grep -E "\b'$org'\b" | grep -E "\b'$peer'\b" | wc -l'
       done
     done
   done

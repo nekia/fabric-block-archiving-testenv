@@ -442,7 +442,7 @@ COMPOSE_FILE_CA=docker-compose-ca.yaml
 # use go as the default language for chaincode
 CC_SRC_LANGUAGE=go
 # default image tag
-IMAGETAG="2.0.0-beta"
+IMAGETAG="2.0.1"
 # Parse commandline args
 if [ "$1" = "-m" ]; then # supports old usage, muscle memory is powerful!
   shift
