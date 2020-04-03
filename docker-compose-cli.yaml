@@ -33,7 +33,6 @@ services:
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=false
       - CORE_PEER_ARCHIVER_ENABLED=true
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=false
       - CORE_PEER_GOSSIP_ORGLEADER=true
     networks:
@@ -47,7 +46,6 @@ services:
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=true
       - CORE_PEER_ARCHIVER_ENABLED=false
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
     networks:
       - byfn
 
@@ -59,7 +57,6 @@ services:
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=false
       - CORE_PEER_ARCHIVER_ENABLED=true
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=false
       - CORE_PEER_GOSSIP_ORGLEADER=true
     networks:
@@ -73,23 +70,6 @@ services:
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=false
       - CORE_PEER_ARCHIVER_ENABLED=false
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
-    networks:
-      - byfn
-
-  blkarchiver-repo.org1.example.com:
-    container_name: blkarchiver-repo.org1.example.com
-    image: hyperledger/fabric-blkarchiver-repo:$IMAGE_TAG
-    volumes:
-      - ./ledgers-archived/org1:/var/hyperledger/production/blockArchiver
-    networks:
-      - byfn
-
-  blkarchiver-repo.org2.example.com:
-    container_name: blkarchiver-repo.org2.example.com
-    image: hyperledger/fabric-blkarchiver-repo:$IMAGE_TAG
-    volumes:
-      - ./ledgers-archived/org2:/var/hyperledger/production/blockArchiver
     networks:
       - byfn
 
