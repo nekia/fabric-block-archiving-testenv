@@ -5,3 +5,5 @@
 /ledgers
 /ledgers-archived
 /**/e2etest/*
+**/node_modules
+**/vendor
