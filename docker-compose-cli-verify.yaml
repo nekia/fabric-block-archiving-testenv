@@ -24,8 +24,7 @@ services:
       service: peer0.org1.example.com
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=false
-      - CORE_PEER_ARCHIVER_ENABLED=false
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
+      - CORE_PEER_ARCHIVER_ENABLED=true
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
       - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
@@ -41,13 +40,13 @@ services:
       file:  docker-compose-cli.yaml
       service: peer1.org1.example.com
     environment:
-      - CORE_PEER_ARCHIVING_ENABLED=false
+      - CORE_PEER_ARCHIVING_ENABLED=true
       - CORE_PEER_ARCHIVER_ENABLED=false
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org1.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
-      - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
-      - FABRIC_LOGGING_FORMAT="%{message}"
+      - FABRIC_LOGGING_SPEC=INFO
+      - FABRIC_LOGGING_FORMAT=%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x} %{message}
+      # - FABRIC_LOGGING_FORMAT="%{message}"
     networks:
       - byfn
     tty: true
@@ -61,7 +60,6 @@ services:
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=false
       - CORE_PEER_ARCHIVER_ENABLED=false
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
       - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
@@ -79,7 +77,6 @@ services:
     environment:
       - CORE_PEER_ARCHIVING_ENABLED=false
       - CORE_PEER_ARCHIVER_ENABLED=false
-      - CORE_LEDGER_BLOCKARCHIVER_URL=blkarchiver-repo.org2.example.com:222
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
       - FABRIC_LOGGING_SPEC=verifyResult=INFO:fatal
