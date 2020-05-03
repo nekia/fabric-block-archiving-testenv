@@ -9,7 +9,7 @@
 #! hyperledger-fabric.jfrog.io/, e.g. 1.4.1-stable or 2.0.0-stable
 fabricVersion: 2.0.1
 #! peer database ledger type (couchdb, goleveldb)
-dbType: couchdb
+dbType: goleveldb
 #! This parameter is used to define fabric logging spec in peers
 peerFabricLoggingSpec: error
 #! This parameter is used to define fabric logging spec in orderers
@@ -64,7 +64,7 @@ ordererOrganizations:
 peerOrganizations:
 - name: org1
   mspId: Org1ExampleCom
-  numPeers: 1
+  numPeers: 2
   numCa: 1
 
 - name: org2
@@ -84,6 +84,9 @@ applicationCapabilities: V1_4_2
 #! testorgschannel1.... based on number of channels passed
 #! (note: client will need to submit the transactions to create channels)
 numChannels: 1
+
+maxBlockfileSize: 8192
+archivingKeepBlocks: 3
 
 #! Not being used for smoke test suite
 k8s:

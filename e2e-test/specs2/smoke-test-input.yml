@@ -36,13 +36,6 @@ installChaincode:
     language: golang
     metadataPath: ""
 
-  # - name: samplecc
-  #   version: v2
-  #   path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
-  #   organizations: org1,org2
-  #   language: golang
-  #   metadataPath: ""
-
 instantiateChaincode:
   - channelName: testorgschannel0
     name: samplecc
@@ -64,7 +57,7 @@ upgradeChaincode:
 invokes:
   - channelName: testorgschannel0
     name: samplecc
-    targetPeers: AllPeers
+    targetPeers: AllAnchors
     nProcPerOrg: 2
     nRequest: 10
     runDur: 0
@@ -86,7 +79,7 @@ invokes:
       keyPayload: [2]
       payLoadMin: 1024
       payLoadMax: 2048
-    args: "16384"
+    args: "8192"
     fcn: "write"
 
 queries:

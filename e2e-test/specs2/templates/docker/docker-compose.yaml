@@ -205,6 +205,13 @@
 #@         env.append("CORE_CHAINCODE_NODE_RUNTIME=hyperledger-fabric.jfrog.io/fabric-nodeenv:amd64-{}".format(config.fabricVersion))
 #@         image="hyperledger-fabric.jfrog.io/fabric-peer:amd64-{}".format(config.fabricVersion)
 #@       end
+#@       if j == 0:
+#@         env.append("CORE_LEDGER_ARCHIVING_ARCHIVER_ENABLED=true")
+#@       else:
+#@         env.append("CORE_LEDGER_ARCHIVING_CLIENT_ENABLED=true")
+#@       end
+#@       env.append("CORE_LEDGER_ARCHIVING_KEEPBLOCKS={}".format(config.archivingKeepBlocks*(j+1)))
+#@       env.append("CORE_LEDGER_MAXBLOCKFILESIZE={}".format(config.maxBlockfileSize*(j+1)))
 #@       ports = ["7051", "{}:{}".format(peerUniquerPort,peerUniquerPort), "{}:{}".format(peerHealthCheckPort,9443)]
 #@       services[container_name] = {"image":image, "environment":env, "volumes":volumes, "ports":ports, "working_dir":"/opt/gopath/src/github.com/hyperledger/fabric/peer", "command":"peer node start", "container_name":container_name}
 #@       if config.dbType == "couchdb":
