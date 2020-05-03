@@ -4,12 +4,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/hyperledger/fabric-test/tools/operator/launcher"
+	"github.com/hyperledger/fabric-test/tools/operator/networkclient"
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/gomega"
-
-	"github.com/hyperledger/fabric-test/tools/operator/launcher"
-	"github.com/hyperledger/fabric-test/tools/operator/networkclient"
 )
 
 func TestSmoke(t *testing.T) {

@@ -191,9 +191,9 @@ func (t *ABstore) query(stub shim.ChaincodeStubInterface, args []string) pb.Resp
 // Transaction makes payment of X units from A to B
 func (t *ABstore) write(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
-	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting 3")
-	}
+	// if len(args) != 1 {
+	// 	return shim.Error("Incorrect number of arguments. Expecting 3")
+	// }
 
 	nToWrite, err := strconv.Atoi(args[0])
 	if err != nil {
@@ -208,7 +208,7 @@ func (t *ABstore) write(stub shim.ChaincodeStubInterface, args []string) pb.Resp
 		return shim.Error(err.Error())
 	}
 
-	return shim.Success(nil)
+	return shim.Success([]byte("OK"))
 }
 
 func main() {

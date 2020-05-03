@@ -6,3 +6,5 @@
 /ledgers-archived
 **/node_modules
 **/vendor
+/e2e-test/PTE
+/github.com/
