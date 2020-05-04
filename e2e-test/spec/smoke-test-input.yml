@@ -58,16 +58,16 @@ invokes:
   - channelName: testorgschannel0
     name: samplecc
     targetPeers: AllAnchors
-    nProcPerOrg: 2
-    nRequest: 10
-    runDur: 0
+    nProcPerOrg: 1
+    nRequest: 0
+    runDur: 30
     organizations: org1,org2
     txnOpt:
       - mode: constant
         options:
           constFreq: 0
           devFreq: 0
-    queryCheck: 100
+    queryCheck: 1
     eventOpt:
       type: FilteredBlock
       listener:  Block
@@ -77,9 +77,9 @@ invokes:
       keyStart: 0
       keyIdx: [1]
       keyPayload: [2]
-      payLoadMin: 1024
-      payLoadMax: 2048
-    args: "8192"
+      payLoadMin: 16
+      payLoadMax: 16
+    args: "16"
     fcn: "write"
 
 queries:

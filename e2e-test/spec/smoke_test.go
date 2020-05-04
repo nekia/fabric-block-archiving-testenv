@@ -32,42 +32,49 @@ var _ = Describe("Smoke Test Suite", func() {
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("3) Updating channel with anchor peers")
+			By("3) Joining peers to channel")
+			action = "command"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("4) Updating channel with anchor peers")
 			action = "anchorpeer"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("4) Installing Chaincode on Peers")
+			By("5) Installing Chaincode on Peers")
 			action = "install"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("5) Instantiating Chaincode")
+			By("6) Instantiating Chaincode")
 			action = "instantiate"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("8) Sending Invokes")
-			action = "invoke"
-			err = testclient.Testclient(action, inputSpecPath)
-			Expect(err).NotTo(HaveOccurred())
+			// By("7) Sending Invokes")
+			// action = "invoke"
+			// err = testclient.Testclient(action, inputSpecPath)
+			// Expect(err).NotTo(HaveOccurred())
 
-			By("9) Joining peers to channel")
-			action = "command"
-			err = testclient.Testclient(action, inputSpecPath)
-			Expect(err).NotTo(HaveOccurred())
 		})
 
 		It("Running end to end (old cc lifecycle)", func() {
 			inputSpecPath = "./smoke-test-input-invoke.yml"
 
-			By("9) Sending Invokes 2")
+			By("7) Sending Invokes")
 			action := "invoke"
-			err := testclient.Testclient(action, inputSpecPath)
-			Expect(err).NotTo(HaveOccurred())
+			var err error
+			for loopCnt := 0; loopCnt < 20; loopCnt++ {
+				err = testclient.Testclient(action, inputSpecPath)
+				Expect(err).NotTo(HaveOccurred())
+			}
 
 			count := getBlockfileCount("peer0-org1")
 			Expect(count).Should(Equal(10))
+
+			count = getBlockfileCount("peer1-org1")
+			Expect(count).Should(Equal(4))
 		})
 	})
 })

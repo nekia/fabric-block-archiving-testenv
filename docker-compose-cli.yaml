@@ -31,10 +31,12 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org1.example.com
     environment:
-      - CORE_PEER_ARCHIVING_ENABLED=false
-      - CORE_PEER_ARCHIVER_ENABLED=true
+      - CORE_LEDGER_ARCHIVING_CLIENT_ENABLED=false
+      - CORE_LEDGER_ARCHIVING_ARCHIVER_ENABLED=true
       - CORE_PEER_GOSSIP_USELEADERELECTION=false
       - CORE_PEER_GOSSIP_ORGLEADER=true
+      - CORE_LEDGER_MAXBLOCKFILESIZE=32768
+      - CORE_LEDGER_ARCHIVING_KEEPBLOCKS=3
     networks:
       - byfn
 
@@ -44,8 +46,10 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer1.org1.example.com
     environment:
-      - CORE_PEER_ARCHIVING_ENABLED=true
-      - CORE_PEER_ARCHIVER_ENABLED=false
+      - CORE_LEDGER_ARCHIVING_CLIENT_ENABLED=true
+      - CORE_LEDGER_ARCHIVING_ARCHIVER_ENABLED=false
+      - CORE_LEDGER_MAXBLOCKFILESIZE=65536
+      - CORE_LEDGER_ARCHIVING_KEEPBLOCKS=6
     networks:
       - byfn
 
@@ -55,10 +59,12 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org2.example.com
     environment:
-      - CORE_PEER_ARCHIVING_ENABLED=false
-      - CORE_PEER_ARCHIVER_ENABLED=true
+      - CORE_LEDGER_ARCHIVING_CLIENT_ENABLED=false
+      - CORE_LEDGER_ARCHIVING_ARCHIVER_ENABLED=true
       - CORE_PEER_GOSSIP_USELEADERELECTION=false
       - CORE_PEER_GOSSIP_ORGLEADER=true
+      - CORE_LEDGER_MAXBLOCKFILESIZE=32768
+      - CORE_LEDGER_ARCHIVING_KEEPBLOCKS=3
     networks:
       - byfn
 
@@ -68,8 +74,8 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer1.org2.example.com
     environment:
-      - CORE_PEER_ARCHIVING_ENABLED=false
-      - CORE_PEER_ARCHIVER_ENABLED=false
+      - CORE_LEDGER_ARCHIVING_CLIENT_ENABLED=false
+      - CORE_LEDGER_ARCHIVING_ARCHIVER_ENABLED=false
     networks:
       - byfn
 
@@ -95,7 +101,7 @@ services:
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/
-        - ./chaincode:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
+        - ./src/chaincode:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./scripts/node:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts

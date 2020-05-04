@@ -177,7 +177,7 @@ function networkUp() {
 
   if [ "${NO_CHAINCODE}" != "true" ]; then
     echo Vendoring Go dependencies ...
-    pushd ./chaincode/abstore/go
+    pushd ./src/chaincode/abstore/go
     GO111MODULE=on go mod vendor
     popd
     echo Finished vendoring Go dependencies
