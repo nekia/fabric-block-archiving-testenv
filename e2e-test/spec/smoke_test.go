@@ -18,6 +18,7 @@ var _ = Describe("Smoke Test Suite", func() {
 			action        string
 			inputSpecPath string
 		)
+
 		It("Running end to end (old cc lifecycle)", func() {
 			inputSpecPath = "./smoke-test-input.yml"
 
@@ -48,6 +49,11 @@ var _ = Describe("Smoke Test Suite", func() {
 
 			By("8) Sending Invokes")
 			action = "invoke"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("9) Joining peers to channel")
+			action = "command"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 		})

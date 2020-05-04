@@ -11,14 +11,14 @@ invokes:
     targetPeers: AllAnchors
     nProcPerOrg: 1
     nRequest: 0
-    runDur: 3
+    runDur: 10
     organizations: org1,org2
     txnOpt:
       - mode: constant
         options:
           constFreq: 0
           devFreq: 0
-    queryCheck: 100
+    queryCheck: 1
     eventOpt:
       type: FilteredBlock
       listener:  Block
@@ -30,5 +30,5 @@ invokes:
       keyPayload: [2]
       payLoadMin: 16
       payLoadMax: 16
-    args: "8192"
+    args: "16"
     fcn: "write"

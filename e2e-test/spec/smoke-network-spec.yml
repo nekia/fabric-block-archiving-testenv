@@ -11,7 +11,7 @@ fabricVersion: 2.0.1
 #! peer database ledger type (couchdb, goleveldb)
 dbType: goleveldb
 #! This parameter is used to define fabric logging spec in peers
-peerFabricLoggingSpec: error
+peerFabricLoggingSpec: info:archiver=debug
 #! This parameter is used to define fabric logging spec in orderers
 ordererFabricLoggingSpec: error
 #! tls in the network (true, false or mutual(mutualtls))
@@ -85,7 +85,7 @@ applicationCapabilities: V1_4_2
 #! (note: client will need to submit the transactions to create channels)
 numChannels: 1
 
-maxBlockfileSize: 8192
+maxBlockfileSize: 1048576
 archivingKeepBlocks: 3
 
 #! Not being used for smoke test suite
