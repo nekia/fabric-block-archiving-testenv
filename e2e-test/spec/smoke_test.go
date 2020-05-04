@@ -63,18 +63,18 @@ var _ = Describe("Smoke Test Suite", func() {
 			inputSpecPath = "./smoke-test-input-invoke.yml"
 
 			By("7) Sending Invokes")
-			action := "invoke"
+			action := "command"
 			var err error
 			for loopCnt := 0; loopCnt < 20; loopCnt++ {
 				err = testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
 			}
 
-			// count := getBlockfileCount("peer0-org1")
-			// Expect(count).Should(Equal(10))
+			count := getBlockfileCount("peer0-org1")
+			Expect(count).Should(Equal(22))
 
-			// count = getBlockfileCount("peer1-org1")
-			// Expect(count).Should(Equal(4))
+			count = getBlockfileCount("peer1-org1")
+			Expect(count).Should(Equal(5))
 		})
 	})
 })
