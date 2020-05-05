@@ -70,11 +70,11 @@ var _ = Describe("Smoke Test Suite", func() {
 				Expect(err).NotTo(HaveOccurred())
 			}
 
-			count := getBlockfileCount("peer0-org1")
-			Expect(count).Should(Equal(10))
+			// count := getBlockfileCount("peer0-org1")
+			// Expect(count).Should(Equal(10))
 
-			count = getBlockfileCount("peer1-org1")
-			Expect(count).Should(Equal(4))
+			// count = getBlockfileCount("peer1-org1")
+			// Expect(count).Should(Equal(4))
 		})
 	})
 })
