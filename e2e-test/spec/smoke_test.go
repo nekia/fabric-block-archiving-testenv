@@ -4,10 +4,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"github.com/hyperledger/fabric-test/tools/operator/networkclient"
 	"github.com/hyperledger/fabric-test/tools/operator/testclient"
 )
 
@@ -22,9 +24,13 @@ var _ = Describe("Smoke Test Suite", func() {
 		It("Running end to end (old cc lifecycle)", func() {
 			inputSpecPath = "./smoke-test-input.yml"
 
+			By("0) Generating channel artifacts")
+			_, err := networkclient.ExecuteCommand("./genchannelartifacts.sh", []string{}, true)
+			Expect(err).NotTo(HaveOccurred())
+
 			By("1) Creating channel")
 			action = "create"
-			err := testclient.Testclient(action, inputSpecPath)
+			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
 			By("2) Joining Peers to channel")
@@ -32,37 +38,27 @@ var _ = Describe("Smoke Test Suite", func() {
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("3) Joining peers to channel")
-			action = "command"
-			err = testclient.Testclient(action, inputSpecPath)
-			Expect(err).NotTo(HaveOccurred())
-
-			By("4) Updating channel with anchor peers")
+			By("3) Updating channel with anchor peers")
 			action = "anchorpeer"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("5) Installing Chaincode on Peers")
+			By("4) Installing Chaincode on Peers")
 			action = "install"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("6) Instantiating Chaincode")
+			By("5) Instantiating Chaincode")
 			action = "instantiate"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
-
-			// By("7) Sending Invokes")
-			// action = "invoke"
-			// err = testclient.Testclient(action, inputSpecPath)
-			// Expect(err).NotTo(HaveOccurred())
 
 		})
 
 		It("Running end to end (old cc lifecycle)", func() {
 			inputSpecPath = "./smoke-test-input-invoke.yml"
 
-			By("7) Sending Invokes")
+			By("6) Sending Invokes")
 			action := "command"
 			var err error
 			for loopCnt := 0; loopCnt < 20; loopCnt++ {
@@ -70,11 +66,15 @@ var _ = Describe("Smoke Test Suite", func() {
 				Expect(err).NotTo(HaveOccurred())
 			}
 
+			// Wait for a while to ensure completion of block discarding
+			time.Sleep(5000 * time.Millisecond)
+
 			count := getBlockfileCount("peer0-org1")
-			Expect(count).Should(Equal(22))
+			Expect(count).Should(Equal(23))
 
 			count = getBlockfileCount("peer1-org1")
 			Expect(count).Should(Equal(5))
+
 		})
 	})
 })
